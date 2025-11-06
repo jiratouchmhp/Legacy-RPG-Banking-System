@@ -1,0 +1,173 @@
+     /*==============================================================*/
+     /* Program: EODPROC (End of Day Processing)                  */
+     /* Description: CL program to orchestrate batch processing   */
+     /* Language: Control Language (CL)                           */
+     /* Created: 2010-01-15                                       */
+     /* Modified: 2024-11-20                                      */
+     /*==============================================================*/
+
+             PGM        PARM(&DATE &MODE)
+
+             /* Declare parameters */
+             DCL        VAR(&DATE) TYPE(*CHAR) LEN(8)
+             DCL        VAR(&MODE) TYPE(*CHAR) LEN(1)
+
+             /* Declare local variables */
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(80)
+             DCL        VAR(&JOBLOG) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&LIBRARY) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&STATUS) TYPE(*CHAR) LEN(1)
+
+             /* Initialize */
+             CHGVAR     VAR(&LIBRARY) VALUE('BANKLIB')
+             CHGVAR     VAR(&STATUS) VALUE('S')
+
+             /* Send start message */
+             SNDPGMMSG  MSG('EOD Processing Started for ' *CAT &DATE) +
+                        MSGTYPE(*INFO)
+
+             /*==========================================================*/
+             /* Step 1: Backup files before processing                   */
+             /*==========================================================*/
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERROR))
+
+             SNDPGMMSG  MSG('Step 1: Backing up database files') +
+                        MSGTYPE(*INFO)
+
+             SAVOBJ     OBJ(CUSTMAST ACCTMAST TRANLOG) +
+                        LIB(&LIBRARY) +
+                        DEV(*SAVF) +
+                        SAVF(BANKLIB/EODBKUP) +
+                        TGTRLS(*CURRENT)
+
+             /*==========================================================*/
+             /* Step 2: Calculate and post interest                      */
+             /*==========================================================*/
+             SNDPGMMSG  MSG('Step 2: Calculating interest') +
+                        MSGTYPE(*INFO)
+
+             /* Run interest calculation program */
+             CALL       PGM(BANKLIB/CALCINT) +
+                        PARM(&DATE)
+
+             MONMSG     MSGID(CPF0000) EXEC(DO)
+                        CHGVAR VAR(&STATUS) VALUE('E')
+                        GOTO CMDLBL(ERROR)
+             ENDDO
+
+             /*==========================================================*/
+             /* Step 3: Generate customer statements                     */
+             /*==========================================================*/
+             IF         COND(&MODE *EQ 'M') THEN(DO) /* Monthly only */
+
+             SNDPGMMSG  MSG('Step 3: Generating statements') +
+                        MSGTYPE(*INFO)
+
+             CALL       PGM(BANKLIB/GENSTMT) +
+                        PARM(&DATE)
+
+             MONMSG     MSGID(CPF0000) EXEC(DO)
+                        CHGVAR VAR(&STATUS) VALUE('E')
+                        GOTO CMDLBL(ERROR)
+             ENDDO
+
+             ENDDO
+
+             /*==========================================================*/
+             /* Step 4: Archive old transactions                         */
+             /*==========================================================*/
+             SNDPGMMSG  MSG('Step 4: Archiving transactions') +
+                        MSGTYPE(*INFO)
+
+             /* Archive transactions older than 90 days */
+             RUNSQL     SQL('INSERT INTO BANKLIB/TRANARCH +
+                        SELECT * FROM BANKLIB/TRANLOG +
+                        WHERE TRANDATE < ' *CAT &DATE *CAT ' - 90 DAYS') +
+                        COMMIT(*NONE)
+
+             MONMSG     MSGID(CPF0000 SQL0000) EXEC(DO)
+                        CHGVAR VAR(&STATUS) VALUE('W')
+                        SNDPGMMSG MSG('Archive warning - continuing') +
+                                  MSGTYPE(*DIAG)
+             ENDDO
+
+             /*==========================================================*/
+             /* Step 5: Update credit scores batch                       */
+             /*==========================================================*/
+             SNDPGMMSG  MSG('Step 5: Updating credit scores') +
+                        MSGTYPE(*INFO)
+
+             CALL       PGM(BANKLIB/BATCHSCR) +
+                        PARM(&DATE)
+
+             MONMSG     MSGID(CPF0000) EXEC(DO)
+                        CHGVAR VAR(&STATUS) VALUE('E')
+                        GOTO CMDLBL(ERROR)
+             ENDDO
+
+             /*==========================================================*/
+             /* Step 6: Generate reports                                 */
+             /*==========================================================*/
+             SNDPGMMSG  MSG('Step 6: Generating reports') +
+                        MSGTYPE(*INFO)
+
+             /* Daily transaction summary */
+             CALL       PGM(BANKLIB/RPTDAILY) +
+                        PARM(&DATE)
+
+             /* Account balance report */
+             CALL       PGM(BANKLIB/RPTBALS) +
+                        PARM(&DATE)
+
+             MONMSG     MSGID(CPF0000) EXEC(DO)
+                        CHGVAR VAR(&STATUS) VALUE('W')
+                        SNDPGMMSG MSG('Report generation warning') +
+                                  MSGTYPE(*DIAG)
+             ENDDO
+
+             /*==========================================================*/
+             /* Step 7: Cleanup and finalization                         */
+             /*==========================================================*/
+             SNDPGMMSG  MSG('Step 7: Cleanup') +
+                        MSGTYPE(*INFO)
+
+             /* Delete temporary files */
+             DLTF       FILE(BANKLIB/EODTEMP)
+             MONMSG     MSGID(CPF2105)  /* File not found */
+
+             /* Send completion message */
+             GOTO       CMDLBL(COMPLETE)
+
+             /*==========================================================*/
+             /* Error handling                                           */
+             /*==========================================================*/
+ERROR:
+             RCVMSG     MSGTYPE(*EXCP) +
+                        MSGDTA(&MSGDTA) +
+                        MSGID(&MSGID)
+
+             SNDPGMMSG  MSG('EOD Processing FAILED: ' *CAT &MSGID +
+                        *CAT ' - ' *CAT &MSGDTA) +
+                        MSGTYPE(*ESCAPE)
+
+             GOTO       CMDLBL(ENDPGM)
+
+             /*==========================================================*/
+             /* Completion                                               */
+             /*==========================================================*/
+COMPLETE:
+             IF         COND(&STATUS *EQ 'S') THEN(DO)
+                        SNDPGMMSG MSG('EOD Processing completed +
+                                  successfully') +
+                                  MSGTYPE(*COMP)
+             ENDDO
+
+             IF         COND(&STATUS *EQ 'W') THEN(DO)
+                        SNDPGMMSG MSG('EOD Processing completed +
+                                  with warnings') +
+                                  MSGTYPE(*COMP)
+             ENDDO
+
+ENDPGM:
+             ENDPGM

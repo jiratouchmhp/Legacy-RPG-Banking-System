@@ -1,0 +1,61 @@
+     A*===============================================================
+     A* Physical File: ACCTMAST (Account Master)
+     A* Description: Customer account information for FSI banking
+     A* Library: BANKLIB
+     A* Created: 2010-01-15
+     A* Modified: 2024-11-20
+     A*===============================================================
+     A          R ACCTREC                  TEXT('Account Record')
+     A            ACCTID        12A         COLHDG('Account' 'ID')
+     A                                      TEXT('Unique Account Number')
+     A            CUSTID        10A         COLHDG('Customer' 'ID')
+     A                                      TEXT('Customer ID Foreign Key')
+     A            ACCTTYPE       2A         COLHDG('Account' 'Type')
+     A                                      TEXT('CK=Check SV=Save LN=Loan')
+     A            BALANCE       15P 2       COLHDG('Current' 'Balance')
+     A                                      TEXT('Account Balance')
+     A            AVAILBAL      15P 2       COLHDG('Available' 'Balance')
+     A                                      TEXT('Available for Withdrawal')
+     A            CURRENCY       3A         COLHDG('Currency')
+     A                                      TEXT('USD EUR GBP etc')
+     A            STATUS         1A         COLHDG('Status')
+     A                                      TEXT('A=Active C=Closed F=Frozen')
+     A            INTRATE        5P 4       COLHDG('Interest' 'Rate')
+     A                                      TEXT('Annual Interest Rate')
+     A            OVERDRAFT      1A         COLHDG('Overdraft' 'Protect')
+     A                                      TEXT('Y=Yes N=No')
+     A            ODLIMIT       15P 2       COLHDG('Overdraft' 'Limit')
+     A                                      TEXT('Max Overdraft Amount')
+     A            LASTTRANDT     8S 0       COLHDG('Last Tran' 'Date')
+     A                                      TEXT('Last Transaction YYYYMMDD')
+     A            LASTTRANTM     6S 0       COLHDG('Last Tran' 'Time')
+     A                                      TEXT('Last Transaction HHMMSS')
+     A            OPENDATE       8S 0       COLHDG('Open' 'Date')
+     A                                      TEXT('Account Opened YYYYMMDD')
+     A            CLOSEDATE      8S 0       COLHDG('Close' 'Date')
+     A                                      TEXT('Account Closed YYYYMMDD')
+     A            BRANCH         6A         COLHDG('Branch' 'Code')
+     A                                      TEXT('Branch ID')
+     A            ACCTOFFICER   10A         COLHDG('Account' 'Officer')
+     A                                      TEXT('Relationship Manager')
+     A            CRTDATE        8S 0       COLHDG('Create' 'Date')
+     A                                      TEXT('Record Created YYYYMMDD')
+     A            CRTTIME        6S 0       COLHDG('Create' 'Time')
+     A                                      TEXT('Record Created HHMMSS')
+     A            CRTUSER       10A         COLHDG('Created' 'By')
+     A                                      TEXT('User Who Created')
+     A            UPDDATE        8S 0       COLHDG('Update' 'Date')
+     A                                      TEXT('Last Update YYYYMMDD')
+     A            UPDTIME        6S 0       COLHDG('Update' 'Time')
+     A                                      TEXT('Last Update HHMMSS')
+     A            UPDUSER       10A         COLHDG('Updated' 'By')
+     A                                      TEXT('User Who Updated')
+     A          K ACCTID
+     A*===============================================================
+     A* Key Fields:
+     A*   ACCTID - Primary Key
+     A*
+     A* Indexes Required:
+     A*   Logical file on CUSTID for customer account lookup
+     A*   Logical file on STATUS, ACCTTYPE for reporting
+     A*===============================================================

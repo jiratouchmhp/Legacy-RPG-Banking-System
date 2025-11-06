@@ -1,0 +1,63 @@
+     A*===============================================================
+     A* Physical File: CUSTMAST (Customer Master)
+     A* Description: Main customer information file for FSI banking
+     A* Library: BANKLIB
+     A* Created: 2010-01-15
+     A* Modified: 2024-11-20
+     A*===============================================================
+     A          R CUSTREC                  TEXT('Customer Record')
+     A            CUSTID        10A         COLHDG('Customer' 'ID')
+     A                                      TEXT('Unique Customer ID')
+     A            SSN            9S 0       COLHDG('Social' 'Security' 'Number')
+     A                                      TEXT('SSN - Encrypted')
+     A            FNAME         25A         COLHDG('First' 'Name')
+     A                                      TEXT('Customer First Name')
+     A            LNAME         25A         COLHDG('Last' 'Name')
+     A                                      TEXT('Customer Last Name')
+     A            MNAME          1A         COLHDG('MI')
+     A                                      TEXT('Middle Initial')
+     A            DOB            8S 0       COLHDG('Date of' 'Birth')
+     A                                      TEXT('YYYYMMDD Format')
+     A            EMAIL         50A         COLHDG('Email' 'Address')
+     A                                      TEXT('Primary Email')
+     A            PHONE         10S 0       COLHDG('Phone' 'Number')
+     A                                      TEXT('Primary Phone')
+     A            ADDR1         40A         COLHDG('Address' 'Line 1')
+     A                                      TEXT('Street Address')
+     A            ADDR2         40A         COLHDG('Address' 'Line 2')
+     A                                      TEXT('Apt/Suite/Building')
+     A            CITY          30A         COLHDG('City')
+     A                                      TEXT('City Name')
+     A            STATE          2A         COLHDG('State')
+     A                                      TEXT('State Code')
+     A            ZIP            9S 0       COLHDG('ZIP' 'Code')
+     A                                      TEXT('ZIP Code')
+     A            COUNTRY        3A         COLHDG('Country')
+     A                                      TEXT('Country Code')
+     A            STATUS         1A         COLHDG('Status')
+     A                                      TEXT('A=Active I=Inactive')
+     A            CREDSCOR       3S 0       COLHDG('Credit' 'Score')
+     A                                      TEXT('FICO Score')
+     A            RISKLVL        1A         COLHDG('Risk' 'Level')
+     A                                      TEXT('L=Low M=Medium H=High')
+     A            CRTDATE        8S 0       COLHDG('Create' 'Date')
+     A                                      TEXT('Record Created YYYYMMDD')
+     A            CRTTIME        6S 0       COLHDG('Create' 'Time')
+     A                                      TEXT('Record Created HHMMSS')
+     A            CRTUSER       10A         COLHDG('Created' 'By')
+     A                                      TEXT('User Who Created')
+     A            UPDDATE        8S 0       COLHDG('Update' 'Date')
+     A                                      TEXT('Last Update YYYYMMDD')
+     A            UPDTIME        6S 0       COLHDG('Update' 'Time')
+     A                                      TEXT('Last Update HHMMSS')
+     A            UPDUSER       10A         COLHDG('Updated' 'By')
+     A                                      TEXT('User Who Updated')
+     A          K CUSTID
+     A*===============================================================
+     A* Key Fields:
+     A*   CUSTID - Primary Key
+     A*
+     A* Indexes Required:
+     A*   Logical file on SSN for duplicate checking
+     A*   Logical file on LNAME, FNAME for searching
+     A*===============================================================

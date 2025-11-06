@@ -1,0 +1,58 @@
+     A*===============================================================
+     A* Physical File: TRANLOG (Transaction Log)
+     A* Description: All account transaction history for FSI banking
+     A* Library: BANKLIB
+     A* Created: 2010-01-15
+     A* Modified: 2024-11-20
+     A*===============================================================
+     A          R TRANREC                  TEXT('Transaction Record')
+     A            TRANID        15A         COLHDG('Transaction' 'ID')
+     A                                      TEXT('Unique Transaction ID')
+     A            ACCTID        12A         COLHDG('Account' 'ID')
+     A                                      TEXT('Account Number')
+     A            TRANTYPE       2A         COLHDG('Tran' 'Type')
+     A                                      TEXT('DP=Dep WD=With TF=Xfer')
+     A            AMOUNT        15P 2       COLHDG('Transaction' 'Amount')
+     A                                      TEXT('Amount')
+     A            BALANCE       15P 2       COLHDG('Balance' 'After')
+     A                                      TEXT('Balance After Transaction')
+     A            TOACCTID      12A         COLHDG('To Account' 'ID')
+     A                                      TEXT('Target Acct for Transfer')
+     A            TRANDATE       8S 0       COLHDG('Transaction' 'Date')
+     A                                      TEXT('Transaction YYYYMMDD')
+     A            TRANTIME       6S 0       COLHDG('Transaction' 'Time')
+     A                                      TEXT('Transaction HHMMSS')
+     A            POSTDATE       8S 0       COLHDG('Post' 'Date')
+     A                                      TEXT('Posting Date YYYYMMDD')
+     A            POSTTIME       6S 0       COLHDG('Post' 'Time')
+     A                                      TEXT('Posting Time HHMMSS')
+     A            DESCR         50A         COLHDG('Description')
+     A                                      TEXT('Transaction Description')
+     A            REFNUM        20A         COLHDG('Reference' 'Number')
+     A                                      TEXT('External Reference')
+     A            CHANNEL        3A         COLHDG('Channel')
+     A                                      TEXT('ATM BRN ONL MOB')
+     A            STATUS         1A         COLHDG('Status')
+     A                                      TEXT('P=Pend C=Comp R=Rev')
+     A            ERRORCODE      5A         COLHDG('Error' 'Code')
+     A                                      TEXT('Error Code if Failed')
+     A            USERID        10A         COLHDG('User' 'ID')
+     A                                      TEXT('User Performing Tran')
+     A            TERMINAL       8A         COLHDG('Terminal' 'ID')
+     A                                      TEXT('Terminal/Device ID')
+     A            IPADDR        15A         COLHDG('IP' 'Address')
+     A                                      TEXT('Source IP Address')
+     A            CRTDATE        8S 0       COLHDG('Create' 'Date')
+     A                                      TEXT('Record Created YYYYMMDD')
+     A            CRTTIME        6S 0       COLHDG('Create' 'Time')
+     A                                      TEXT('Record Created HHMMSS')
+     A          K TRANID
+     A*===============================================================
+     A* Key Fields:
+     A*   TRANID - Primary Key
+     A*
+     A* Indexes Required:
+     A*   Logical file on ACCTID, TRANDATE for account history
+     A*   Logical file on TRANDATE for daily processing
+     A*   Logical file on STATUS for pending transaction processing
+     A*===============================================================
