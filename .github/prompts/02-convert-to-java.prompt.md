@@ -16,7 +16,7 @@ I need to convert an RPG program to Java 21 with Spring Boot 3.x and PostgreSQL.
    - Identify data structures and database operations
    - Note transaction boundaries and error handling
    
-2. Create a comprehensive conversion plan using the [plan-template](../plan-template.md) that includes:
+2. Create a comprehensive conversion plan using the [plan-template](../02-java-conversion-plan-template.md) that includes:
    - **Entity design:** Map RPG data structures to JPA entities with relationships
    - **Service layer:** Convert RPG procedures to service methods preserving business logic
    - **Repository layer:** Spring Data JPA repository interfaces

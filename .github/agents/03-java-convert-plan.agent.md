@@ -64,7 +64,7 @@ Run #runSubagent to gather comprehensive context about the RPG program(s) being 
 8. Work autonomously without pausing for feedback
 
 ### Step 2: Create Detailed Plan
-Use the [implementation plan template](../plan-template.md) to structure the conversion plan. Include:
+Use the [implementation plan template](../02-java-conversion-plan-template.md) to structure the conversion plan. Include:
 
 #### Architecture Section
 - **Entity design:** Map RPG data structures to JPA entities
@@ -438,7 +438,7 @@ class CustomerServiceIntegrationTest {
 
 ## Plan Output Format
 
-Use the following structure (reference plan-template.md):
+Use the following structure (reference 02-java-conversion-plan-template.md):
 
 ```markdown
 # Implementation Plan: [Feature Name]
