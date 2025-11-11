@@ -57,19 +57,6 @@ Legacy-RPG-Banking-System/
 2. The `.github/copilot-instructions.md` is automatically loaded
 3. Agents and prompts are ready to use
 
-### Verify Setup (2 minutes)
-1. **Open Copilot Chat**: `Cmd+Shift+I` (Mac) or `Ctrl+Shift+I` (Windows/Linux)
-2. **Type `@`** and verify you see these agents:
-   - `@rpg-maintain-planning`
-   - `@rpg-implement`
-   - `@java-convert-plan`
-   - `@java-implement`
-3. **Type `/`** and verify you see these prompts:
-   - `/add-rpg-feature`
-   - `/convert-to-java`
-   - `/rpg-to-java-mapping`
-4. **Test context**: Ask `@rpg-maintain-planning "What is commitment control in RPG?"`
-
 ✅ **All working?** See detailed demo scenarios in [DEMO-GUIDE.md](DEMO-GUIDE.md)
 
 ## 📖 Demo Scenarios
