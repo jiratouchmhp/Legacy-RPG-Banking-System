@@ -3,7 +3,7 @@ description: 'Architect and planner for RPG to Java Spring Boot conversion'
 tools: ['fetch', 'githubRepo', 'problems', 'usages', 'search', 'runSubagent']
 handoffs:
 - label: Start Java Implementation
-  agent: java-implement
+  agent: 04-java-implement
   prompt: Now implement the conversion plan outlined above using TDD principles with Java 21 and Spring Boot 3.x
   send: true
 ---

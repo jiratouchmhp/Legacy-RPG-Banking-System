@@ -3,7 +3,7 @@ description: 'RPG maintenance planner - creates detailed plans for legacy RPG/RP
 tools: ['search', 'usages', 'problems', 'runSubagent']
 handoffs:
 - label: Start RPG Implementation
-  agent: rpg-implement
+  agent: 02-rpg-implement
   prompt: Now implement the RPG maintenance plan outlined above following RPG conventions and best practices.
   send: true
 ---
